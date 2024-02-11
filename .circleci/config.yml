@@ -1,0 +1,44 @@
+jobs:
+  # Build the docker image and run tests.
+  build_and_test:
+    executor: heroku/default
+    steps:
+      # For using docker commands.
+      - setup_remote_docker
+
+      # Build the docker image for testing.
+      - checkout
+      - run: docker build -t densenet-inference-heroku .
+
+      # Run pytest in the docker container.
+      - run:
+          command: docker run densenet-inference-heroku pytest
+
+  # Build the docker image and deploy it to Heroku.
+  build_and_deploy:
+    executor: heroku/default
+    steps:
+      # For using docker commands.
+      - setup_remote_docker
+
+      # Build the docker image
+      - checkout
+      # Deploy to Heroku
+      - heroku/install
+      - run: heroku stack:set container -a "${HEROKU_APP_NAME}"
+      - heroku/deploy-via-git:
+          app-name: "${HEROKU_APP_NAME}"
+
+orbs:
+  # For using Heroku CLI commandｓ.
+  heroku: circleci/heroku@2.0
+
+version: 2.1
+workflows:
+  heroku_deploy:
+    jobs:
+      - build_and_test
+      - build_and_deploy:
+          requires:
+            # Deploy after testing.
+            - build_and_test
