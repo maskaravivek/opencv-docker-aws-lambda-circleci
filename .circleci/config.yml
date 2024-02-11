@@ -1,44 +1,33 @@
-jobs:
-  # Build the docker image and run tests.
-  build_and_test:
-    executor: heroku/default
-    steps:
-      # For using docker commands.
-      - setup_remote_docker
-
-      # Build the docker image for testing.
-      - checkout
-      - run: docker build -t densenet-inference-heroku .
-
-      # Run pytest in the docker container.
-      - run:
-          command: docker run densenet-inference-heroku pytest
-
-  # Build the docker image and deploy it to Heroku.
-  build_and_deploy:
-    executor: heroku/default
-    steps:
-      # For using docker commands.
-      - setup_remote_docker
-
-      # Build the docker image
-      - checkout
-      # Deploy to Heroku
-      - heroku/install
-      - run: heroku stack:set container -a "${HEROKU_APP_NAME}"
-      - heroku/deploy-via-git:
-          app-name: "${HEROKU_APP_NAME}"
+version: 2.1
 
 orbs:
-  # For using Heroku CLI commandｓ.
-  heroku: circleci/heroku@2.0
+  aws-ecr: orbies/aws-ecr@1.2.1
 
-version: 2.1
+jobs:
+  deploy_docker_image:
+    docker:
+        - image: cimg/python:3.10.7
+    steps:
+      - checkout
+      - run:
+          name: Install awscli
+          command: curl --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
+      - run:
+          name: 'docker login'
+          command: |
+            aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_URL
+
 workflows:
-  heroku_deploy:
+  build_and_push_image:
     jobs:
-      - build_and_test
-      - build_and_deploy:
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          repo: '${AWS_ECR_REPO_NAME}'
+          docker-login: false
+          account-url: AWS_ECR_ACCOUNT_URL
+          region: AWS_DEFAULT_REGION
+          tag: "latest"
+      - deploy_docker_image:
           requires:
-            # Deploy after testing.
-            - build_and_test
+            - aws-ecr/build-and-push-image
