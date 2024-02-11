@@ -39,5 +39,6 @@ def upload_image_to_s3(image_path):
     
     with open(image_path, 'rb') as f:
         s3.upload_fileobj(f, S3_BUCKET_NAME, s3_file_path)
-        
-    return s3_file_path
+    
+    s3_file_url = f'https://{S3_BUCKET_NAME}.s3.amazonaws.com/{s3_file_path}'
+    return s3_file_url

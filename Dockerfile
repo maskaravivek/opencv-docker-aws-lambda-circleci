@@ -83,6 +83,8 @@ ENV MPLCONFIGDIR=/tmp
 ENV DNNL_DEFAULT_FPMATH_MODE=BF16
 ENV LRU_CACHE_CAPACITY=1024
 
-ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
+COPY ./entry.sh /entry.sh
+RUN chmod +x /entry.sh
+ADD aws-lambda-rie /usr/local/bin/aws-lambda-rie
 
-CMD [ "app.lambda_handler" ]
+ENTRYPOINT [ "/entry.sh","app.lambda_handler" ]
