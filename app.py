@@ -1,15 +1,30 @@
 import json
-from process_task import process_image
+from process_task import convert_image_to_grayscale
 import os
 
 def lambda_handler(event, context):
-    for record in event['Records']:
-        request = json.loads(record['body'])
-        process_image(request=request)
+    request_body = json.loads(event['body'])
+    
+    image_url = request_body['imageUrl']
+    
+    gray_image_path = convert_image_to_grayscale(image_url)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps({
+            'grayImagePath': gray_image_path
+        })
+    }   
 
 if __name__ == "__main__":
     import os
-    SAMPLE_JOB_ID = os.environ.get('SAMPLE_JOB_ID')
-    process_image({
-        'jobId': SAMPLE_JOB_ID
-    })
+    
+    event = {
+        'body': json.dumps({
+            'imageUrl': 'https://i.imgur.com/afKn8xK.jpg'
+        })
+    }
+    
+    context = {}
+    
+    lambda_handler(event, context)
