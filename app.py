@@ -3,7 +3,7 @@ from process_task import convert_image_to_grayscale
 import os
 
 def lambda_handler(event, context):
-    request_body = event['body']
+    request_body = json.loads(event['body'])
     
     image_url = request_body['imageUrl']
     
