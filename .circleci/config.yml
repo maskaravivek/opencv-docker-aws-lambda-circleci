@@ -20,12 +20,15 @@ workflows:
       - aws-ecr/build_and_push_image:
           create_repo: false
           push_image: true
-          account_id: AWS_ACCOUNT_ID
+          account_id: '${AWS_ACCOUNT_ID}'
           repo: '${AWS_ECR_REPO_NAME}'
           dockerfile: Dockerfile
           auth:
-            - aws-cli/setup
-          region: AWS_DEFAULT_REGION
+            - aws-cli/setup:
+              aws_access_key_id: '${AWS_ACCESS_KEY_ID}'
+              aws_secret_access_key: '${AWS_SECRET_ACCESS_KEY}'
+              region: '${AWS_DEFAULT_REGION}'
+          region: '${AWS_DEFAULT_REGION}'
           tag: "latest"
           workspace_root: .
       - deploy_container_lambda:
