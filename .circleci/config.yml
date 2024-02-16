@@ -20,6 +20,7 @@ workflows:
       - aws-ecr/build_and_push_image:
           create_repo: false
           push_image: true
+          account_id: AWS_ACCOUNT_ID
           repo: '${AWS_ECR_REPO_NAME}'
           dockerfile: Dockerfile
           auth:
