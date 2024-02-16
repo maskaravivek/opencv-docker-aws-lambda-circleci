@@ -16,5 +16,8 @@ provider:
 
 functions:
   OpenCVGrayscaleLambdaV2:
-    image: ${param:account_id}.dkr.ecr.us-west-2.amazonaws.com/${param:repo_name}@${param:image_sha}
+    image: ${param:account_url}/${param:repo_name}@${param:image_sha}
     timeout: 60
+    memorySize: 1024
+    environment:
+      S3_BUCKET_NAME: ${param:bucket_name}
