@@ -18,11 +18,14 @@ jobs:
               IMAGE_DIGEST=$(aws ecr describe-images --repository-name opencv-grayscale-image --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest')
               IMAGE_DIGEST=$(echo $IMAGE_DIGEST | sed -e 's/^"//' -e 's/"$//')
               
-              echo 'export IMAGE_DIGEST=$IMAGE_DIGEST' >> "$BASH_ENV"
+              echo 'export IMAGE_SHA=$IMAGE_DIGEST' >> "$BASH_ENV"
               source "$BASH_ENV"
+              echo $IMAGE_SHA
        - run: 
             name: Deploy Lambda
-            command: serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_DIGEST}"
+            command: |
+              echo "Image SHA: $IMAGE_DIGEST $IMAGE_SHA"
+              serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_SHA}"
 
 workflows:
   build_and_push_image:
