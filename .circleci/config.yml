@@ -22,7 +22,7 @@ jobs:
               source "$BASH_ENV"
        - run: 
             name: Deploy Lambda
-            command: serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${IMAGE_DIGEST}"
+            command: serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_DIGEST}"
 
 workflows:
   build_and_push_image:
