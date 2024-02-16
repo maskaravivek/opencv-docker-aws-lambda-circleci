@@ -13,7 +13,7 @@ jobs:
        - aws-cli/setup
        - serverless/setup
        - run: 
-            name: Get ECR Image Tag
+            name: Get ECR Image Tag and Deploy Lambda
             command: |
               IMAGE_DIGEST=$(aws ecr describe-images --repository-name opencv-grayscale-image --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest')
               IMAGE_DIGEST=$(echo $IMAGE_DIGEST | sed -e 's/^"//' -e 's/"$//')
@@ -21,29 +21,26 @@ jobs:
               echo 'export IMAGE_SHA=$IMAGE_DIGEST' >> "$BASH_ENV"
               source "$BASH_ENV"
               echo $IMAGE_SHA
-       - run: 
-            name: Deploy Lambda
-            command: |
               echo "Image SHA: $IMAGE_DIGEST $IMAGE_SHA"
               serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_SHA}"
-
+              
 workflows:
   build_and_push_image:
     jobs:
-      - aws-ecr/build_and_push_image:
-          create_repo: false
-          push_image: true
-          account_id: '${AWS_ACCOUNT_ID}'
-          repo: '${AWS_ECR_REPO_NAME}'
-          dockerfile: Dockerfile
-          auth:
-            - aws-cli/setup:
-              aws_access_key_id: '${AWS_ACCESS_KEY_ID}'
-              aws_secret_access_key: '${AWS_SECRET_ACCESS_KEY}'
-              region: '${AWS_DEFAULT_REGION}'
-          region: '${AWS_DEFAULT_REGION}'
-          tag: "latest"
-          workspace_root: .
-      - deploy_container_lambda:
-          requires:
-            - aws-ecr/build_and_push_image
+      # - aws-ecr/build_and_push_image:
+      #     create_repo: false
+      #     push_image: true
+      #     account_id: '${AWS_ACCOUNT_ID}'
+      #     repo: '${AWS_ECR_REPO_NAME}'
+      #     dockerfile: Dockerfile
+      #     auth:
+      #       - aws-cli/setup:
+      #         aws_access_key_id: '${AWS_ACCESS_KEY_ID}'
+      #         aws_secret_access_key: '${AWS_SECRET_ACCESS_KEY}'
+      #         region: '${AWS_DEFAULT_REGION}'
+      #     region: '${AWS_DEFAULT_REGION}'
+      #     tag: "latest"
+      #     workspace_root: .
+      - deploy_container_lambda
+          # requires:
+          #   - aws-ecr/build_and_push_image
