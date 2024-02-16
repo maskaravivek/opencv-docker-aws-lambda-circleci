@@ -12,7 +12,7 @@ jobs:
        - checkout
        - aws-cli/setup
        - serverless/setup
-       - run: serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=sha256:b6e2251e80e7ee322aeb47031b2f587889ab820921a921b82e4a56918dec446a"
+       - run: serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}"
 
 workflows:
   build_and_push_image:

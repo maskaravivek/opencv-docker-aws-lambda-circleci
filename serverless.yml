@@ -16,7 +16,7 @@ provider:
 
 functions:
   OpenCVGrayscaleLambdaV2:
-    image: ${param:account_url}/${param:repo_name}@${param:image_sha}
+    image: ${param:account_url}/${param:repo_name}@latest
     timeout: 60
     memorySize: 1024
     environment:
