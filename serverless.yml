@@ -1,0 +1,20 @@
+service: opencv-grayscale-lambda
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  region: us-west-2
+  lambdaHashingVersion: 20201221
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+          Resource: ["arn:aws:s3:::${param:bucket_name}", "arn:aws:s3:::${param:bucket_name}/*"]
+
+functions:
+  OpenCVGrayscaleLambdaV2:
+    image: ${param:account_id}.dkr.ecr.us-west-2.amazonaws.com/${param:repo_name}@${param:image_sha}
+    timeout: 60
