@@ -8,7 +8,6 @@ orbs:
 jobs:
   deploy_container_lambda:
      executor: serverless/default
-     name: Deploy Container Lambda
      steps:
        - checkout
        - aws-cli/setup
