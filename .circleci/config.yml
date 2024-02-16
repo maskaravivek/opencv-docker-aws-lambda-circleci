@@ -17,14 +17,16 @@ jobs:
 workflows:
   build_and_push_image:
     jobs:
-      - aws-ecr/build-and-push-image:
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+      - aws-ecr/build_and_push_image:
+          create_repo: false
+          push_image: true
           repo: '${AWS_ECR_REPO_NAME}'
-          docker-login: false
-          account-url: AWS_ECR_ACCOUNT_URL
+          dockerfile: Dockerfile
+          auth:
+            - aws-cli/setup
           region: AWS_DEFAULT_REGION
           tag: "latest"
+          workspace_root: .
       - deploy_container_lambda:
           requires:
             - aws-ecr/build-and-push-image
