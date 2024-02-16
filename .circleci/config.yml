@@ -34,7 +34,7 @@ workflows:
               aws_secret_access_key: '${AWS_SECRET_ACCESS_KEY}'
               region: '${AWS_DEFAULT_REGION}'
           region: '${AWS_DEFAULT_REGION}'
-          tag: "latest"
+          tag: '${CIRCLE_SHA1}'
           workspace_root: .
       - deploy_container_lambda:
           requires:
