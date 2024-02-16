@@ -2,20 +2,17 @@ version: 2.1
 
 orbs:
   aws-ecr: orbies/aws-ecr@1.2.1
+  aws-cli: circleci/aws-cli@1.0
+  serverless: circleci/serverless-framework@1.0
 
 jobs:
-  deploy_docker_image:
-    docker:
-        - image: cimg/python:3.10.7
-    steps:
-      - checkout
-      - run:
-          name: Install awscli
-          command: curl --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
-      - run:
-          name: 'docker login'
-          command: |
-            aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_URL
+  deploy_container_lambda:
+     executor: serverless/default
+     steps:
+       - checkout
+       - aws-cli/setup
+       - serverless/setup
+       - run: serverless deploy --param="bucket_name=mdedit" --param="account_id=927728891088" --param="repo_name=opencv-grayscale-image" --param="image_sha=sha256:b6e2251e80e7ee322aeb47031b2f587889ab820921a921b82e4a56918dec446a"
 
 workflows:
   build_and_push_image:
@@ -28,6 +25,6 @@ workflows:
           account-url: AWS_ECR_ACCOUNT_URL
           region: AWS_DEFAULT_REGION
           tag: "latest"
-      - deploy_docker_image:
+      - deploy_container_lambda:
           requires:
             - aws-ecr/build-and-push-image
