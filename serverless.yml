@@ -5,7 +5,6 @@ frameworkVersion: "3"
 provider:
   name: aws
   region: us-west-2
-  lambdaHashingVersion: 20201221
   iam:
     role:
       statements:
