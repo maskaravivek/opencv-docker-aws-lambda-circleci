@@ -24,7 +24,7 @@ workflows:
     jobs:
       - aws-ecr/build_and_push_image:
           create_repo: false
-          push_image: true
+          push_image: false
           account_id: '${AWS_ACCOUNT_ID}'
           repo: '${AWS_ECR_REPO_NAME}'
           dockerfile: Dockerfile
@@ -37,6 +37,17 @@ workflows:
           region: '${AWS_DEFAULT_REGION}'
           tag: '${CIRCLE_SHA1}'
           workspace_root: .
-      - deploy_container_lambda:
+      - aws-ecr/push_image:
+          region: '${AWS_DEFAULT_REGION}'
+          repo: '${AWS_ECR_REPO_NAME}'
+          tag: '${CIRCLE_SHA1}'
+          auth:
+            - aws-cli/setup:
+              aws_access_key_id: '${AWS_ACCESS_KEY_ID}'
+              aws_secret_access_key: '${AWS_SECRET_ACCESS_KEY}'
+              region: '${AWS_DEFAULT_REGION}'
           requires:
             - aws-ecr/build_and_push_image
+      - deploy_container_lambda:
+          requires:
+            - aws-ecr/push_image
