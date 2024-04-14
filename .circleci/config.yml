@@ -28,6 +28,7 @@ workflows:
           account_id: '${AWS_ACCOUNT_ID}'
           repo: '${AWS_ECR_REPO_NAME}'
           dockerfile: Dockerfile
+          platform: linux/amd64
           auth:
             - aws-cli/setup:
               aws_access_key_id: '${AWS_ACCESS_KEY_ID}'
