@@ -11,7 +11,6 @@ jobs:
       image: ubuntu-2204:current
     steps:
       - checkout
-      - aws-cli/setup
       - aws-ecr/build_and_push_image:
           auth:
             - aws-cli/setup:
@@ -20,7 +19,6 @@ jobs:
                 region: '${AWS_DEFAULT_REGION}'
           create_repo: false
           dockerfile: Dockerfile
-          path: workspace
           platform: linux/amd64
           push_image: false
           region: '${AWS_DEFAULT_REGION}'
