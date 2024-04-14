@@ -10,6 +10,8 @@ jobs:
     machine:
       image: ubuntu-2204:current
     steps:
+      - checkout
+      - aws-cli/setup
       - aws-ecr/build_and_push_image:
           auth:
             - aws-cli/setup:
