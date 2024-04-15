@@ -6,7 +6,7 @@ orbs:
   serverless: circleci/serverless-framework@2.0.1
 
 jobs:
-  build-test-then-push-with-buildx:
+  build_and_push_to_ecr:
     machine:
       image: ubuntu-2204:current
     steps:
@@ -45,7 +45,7 @@ jobs:
 workflows:
   build_and_push_image:
     jobs:
-      - build-test-then-push-with-buildx
+      - build_and_push_to_ecr
       - deploy_container_lambda:
           requires:
-            - build-test-then-push-with-buildx
+            - build_and_push_to_ecr
