@@ -42,12 +42,7 @@ jobs:
               
               IMAGE_DIGEST=$(echo $IMAGE_DIGEST | sed -e 's/^"//' -e 's/"$//')
               
-              serverless deploy \
-              --param="bucket_name=${BUCKET_NAME}"\
-              --param="account_id=${AWS_ACCOUNT_ID}\
-              --param="region=${AWS_DEFAULT_REGION}\
-              --param="repo_name=${AWS_ECR_REPO_NAME}"\
-              --param="image_sha=${IMAGE_DIGEST}"
+              serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_id=${AWS_ACCOUNT_ID}" --param="region=${AWS_DEFAULT_REGION}" --param="repo_name=${AWS_ECR_REPO_NAME}" --param="image_sha=${IMAGE_DIGEST}"
               
 workflows:
   deploy_lambda:
