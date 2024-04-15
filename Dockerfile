@@ -87,4 +87,4 @@ COPY ./entry.sh /entry.sh
 RUN chmod +x /entry.sh
 ADD aws-lambda-rie /usr/local/bin/aws-lambda-rie
 
-ENTRYPOINT [ "/entry.sh","app.lambda_handler" ]
+ENTRYPOINT [ "/entry.sh", "app.lambda_handler" ]

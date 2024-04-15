@@ -6,7 +6,6 @@ import os
 tmp_dir = "/tmp"
 S3_BUCKET_NAME = os.environ["S3_BUCKET_NAME"]
 
-
 def convert_image_to_grayscale(image_url):
     tmp_img_path = download_image(image_url)
     output_img_path = f"{tmp_dir}/gray_image.jpg"

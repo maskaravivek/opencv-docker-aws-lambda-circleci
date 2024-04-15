@@ -1,6 +1,5 @@
 import json
 from process_task import convert_image_to_grayscale
-import os
 
 def lambda_handler(event, context):
     try:
