@@ -38,9 +38,16 @@ jobs:
        - run: 
             name: Get ECR Image Tag and Deploy Lambda
             command: |
-              IMAGE_DIGEST=$(aws ecr describe-images --repository-name opencv-grayscale-image --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest')
+              IMAGE_DIGEST=$(aws ecr describe-images --repository-name ${AWS_ECR_REPO_NAME} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest')
+              
               IMAGE_DIGEST=$(echo $IMAGE_DIGEST | sed -e 's/^"//' -e 's/"$//')
-              serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_DIGEST}"
+              
+              serverless deploy \
+              --param="bucket_name=${BUCKET_NAME}"\
+              --param="account_id=${AWS_ACCOUNT_ID}\
+              --param="region=${AWS_DEFAULT_REGION}\
+              --param="repo_name=${AWS_ECR_REPO_NAME}"\
+              --param="image_sha=${IMAGE_DIGEST}"
               
 workflows:
   deploy_lambda:
