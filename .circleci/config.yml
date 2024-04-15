@@ -29,7 +29,7 @@ jobs:
           region: '${AWS_DEFAULT_REGION}'
           repo: '${AWS_ECR_REPO_NAME}'
           tag: '${CIRCLE_SHA1}'
-  deploy_container_lambda:
+  deploy_using_serverless:
      executor: serverless/default
      steps:
        - checkout
@@ -43,9 +43,9 @@ jobs:
               serverless deploy --param="bucket_name=${BUCKET_NAME}" --param="account_url=${AWS_ECR_ACCOUNT_URL}" --param="repo_name=${ECR_REPO_NAME}" --param="image_sha=${IMAGE_DIGEST}"
               
 workflows:
-  build_and_push_image:
+  deploy_lambda:
     jobs:
       - build_and_push_to_ecr
-      - deploy_container_lambda:
+      - deploy_using_serverless:
           requires:
             - build_and_push_to_ecr
